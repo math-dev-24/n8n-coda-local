@@ -7,7 +7,7 @@ Ce pack Coda permet d'interagir avec votre instance n8n personnelle pour déclen
 ### Authentification
 - **Type** : CustomHeaderToken
 - **Header** : `X-N8N-API-KEY`
-- **Domaine** : `mathieu-busse.dev`
+- **Domaine** : `monDomain.fr`
 
 
 ## Installation
