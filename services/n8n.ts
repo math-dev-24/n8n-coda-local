@@ -1,6 +1,5 @@
 import * as coda from "@codahq/packs-sdk";
-import { fetcher } from "./fetch";
-import { FetchOptions, QueryParams } from "../types";
+import { QueryParams } from "../types";
 import { UrlService } from "./url";
 
 export class N8nService {

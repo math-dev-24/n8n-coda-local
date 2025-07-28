@@ -9,7 +9,7 @@ export const fetcher: Fetcher = async (
 
     try {
         const response = await context.fetcher.fetch({
-            url: url.toString(),
+            url,
             method: options.method,
             headers: options.headers,
             body: options.body ? JSON.stringify(options.body) : undefined,
