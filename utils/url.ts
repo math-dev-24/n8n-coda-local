@@ -1,6 +1,6 @@
 import { QueryParams } from "../types/request";
 
-export default function buildUrl(baseUrl: string, params: QueryParams = {}): string {
+export function buildUrl(baseUrl: string, params: QueryParams = {}): string {
   const url = new URL(baseUrl);
   
   Object.entries(params).forEach(([key, value]) => {

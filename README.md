@@ -1,272 +1,128 @@
-# Coda Pack - n8n Integration
+# Coda n8n Pack
 
-A Coda Pack that allows you to trigger n8n workflows directly from your Coda documents. This pack provides seamless integration between Coda and n8n, enabling you to automate workflows and manage executions from within your Coda workspace.
+Ce pack Coda permet d'interagir avec votre instance n8n pour déclencher des workflows et gérer les ressources.
 
-## 🚀 Features
+## Types de Requêtes
 
-- **Trigger Workflows**: Execute n8n workflows with custom HTTP methods and data payloads
-- **Test Mode Support**: Test workflows before production execution
-- **JSON Generation**: Helper function to generate JSON objects from Coda lists
-- **Flexible Data Handling**: Support for various HTTP methods and data formats
-- **Error Handling**: Comprehensive error handling and user feedback
+Le pack distingue deux types principaux de requêtes :
 
-## 📋 Prerequisites
+### 1. Workflows (triggerWorkflow)
+- **Objectif** : Déclencher l'exécution d'un workflow n8n
+- **URL** : `/webhook/{workflowId}` ou `/webhook-test/{workflowId}` (mode test)
+- **Méthode** : POST (par défaut)
+- **Caractéristiques** :
+  - Peut inclure des données dans le body
+  - Supporte les modes test et production
+  - Utilise des webhooks n8n
 
-- A running n8n instance
-- Coda account with Pack access
-- n8n webhook endpoints configured
+### 2. Requêtes API Standard
+- **Objectif** : Gérer les ressources n8n (utilisateurs, workflows, tags)
+- **URL** : `/users`, `/workflows`, `/tags`, etc.
+- **Méthodes** : GET, POST, PUT, DELETE
+- **Caractéristiques** :
+  - Supporte la pagination
+  - Gestion des paramètres de requête
+  - Opérations CRUD standard
 
-## 🛠️ Installation
+## Fonctions Disponibles
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd coda-n8n
-   ```
+### TriggerWorkflow
+Déclenche un workflow n8n.
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   # or
-   pnpm install
-   ```
+**Paramètres :**
+- `baseUrl` : URL de votre instance n8n
+- `workflowId` : ID du workflow à déclencher
+- `method` : Méthode HTTP (optionnel, défaut: GET)
+- `data` : Données JSON à envoyer (optionnel)
+- `testMode` : Mode test ou production (optionnel, défaut: false)
 
-3. **Build the pack**:
-   ```bash
-   npm run build
-   ```
-
-4. **Deploy to Coda**:
-   - Follow the [Coda Pack deployment guide](https://coda.io/packs/build/latest/)
-   - Use the Coda CLI to deploy your pack
-
-## 📖 Usage
-
-### TriggerWorkflow Formula
-
-Triggers an n8n workflow with specified parameters.
-
-#### Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `baseUrl` | String | Yes | Your n8n instance base URL (e.g., `https://your-n8n-instance.com`) |
-| `workflowId` | String | Yes | The ID of the workflow to trigger |
-| `method` | String | No | HTTP method to use (GET, POST, PUT, DELETE, PATCH, HEAD). Default: GET |
-| `data` | String Array | No | JSON data to send to the workflow |
-| `testMode` | Boolean | No | If true, triggers workflow in test mode. Default: false |
-
-#### Return Value
-
-Returns an object with:
-- `success`: Boolean indicating if the operation was successful
-- `message`: Status message
-- `executionId`: The ID of the workflow execution
-
-#### Example Usage
-
-```javascript
-// Basic workflow trigger
-TriggerWorkflow("https://my-n8n.com", "workflow-123")
-
-// Trigger with POST method and data
-TriggerWorkflow(
-  "https://my-n8n.com", 
-  "workflow-123", 
-  "POST", 
-  ["{\"name\": \"John\", \"email\": \"john@example.com\"}"], 
-  false
-)
-
-// Test mode trigger
-TriggerWorkflow("https://my-n8n.com", "workflow-123", "GET", [], true)
+**Exemple :**
+```
+TriggerWorkflow("https://your-n8n.com", "workflow-123", "POST", ["item1", "item2"], false)
 ```
 
-### generateJson Formula
+### Users (Sync Table)
+Récupère la liste des utilisateurs.
 
-Generates a JSON object from Coda list data.
+**Paramètres :**
+- `baseUrl` : URL de votre instance n8n
+- `limit` : Nombre d'utilisateurs à retourner (optionnel, défaut: 10)
+- `includeRole` : Inclure les rôles (optionnel, défaut: false)
+- `projectId` : ID du projet (optionnel)
 
-#### Parameters
+### Workflows (Sync Table)
+Récupère la liste des workflows.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `keys` | String Array | Yes | The keys for each object in the items array |
-| `values` | String Array | Yes | The values for each object in the items array |
+**Paramètres :**
+- `baseUrl` : URL de votre instance n8n
 
-#### Return Value
+### generateJson
+Génère un objet JSON à partir de listes de clés et valeurs.
 
-Returns a JSON string representation of the object.
+**Paramètres :**
+- `keys` : Liste des clés
+- `values` : Liste des valeurs correspondantes
 
-#### Example Usage
+## Architecture des Services
 
-```javascript
-// Generate JSON from Coda columns
-generateJson(
-  ["name", "email", "age"], 
-  ["John Doe", "john@example.com", "30"]
-)
-// Returns: {"name":"John Doe","email":"john@example.com","age":"30"}
-```
+### UrlService
+Gère la construction des URLs et la logique de requête :
+- `isWorkflowRoute()` : Détermine si c'est un workflow
+- `executeRequest()` : Exécute une requête selon le type
+- `executeRequestWithParams()` : Exécute une requête avec paramètres
+- `getUrlWithWorkflowId()` : Construit l'URL pour les workflows
 
-## 🔧 Configuration
+### N8nService
+Service principal pour interagir avec n8n :
+- `triggerWorkflow()` : Déclenche un workflow
+- `getUsers()` : Récupère les utilisateurs
+- `getWorkflows()` : Récupère les workflows
+- `executeRequest()` : Méthode générique selon le type
 
-### n8n Setup
+### Utilitaires
+Fonctions helper dans `utils/index.ts` :
+- `getRequestType()` : Détermine le type de requête
+- `isWorkflowRoute()` : Vérifie si c'est un workflow
+- `requiresUrlParams()` : Vérifie si des paramètres d'URL sont nécessaires
+- `requiresBody()` : Vérifie si un body est nécessaire
 
-1. **Configure Webhooks**: Ensure your n8n workflows have webhook nodes configured
-2. **Get Workflow IDs**: Note the webhook URLs or workflow IDs you want to trigger
-3. **Test Endpoints**: Verify your webhook endpoints are accessible
+## Configuration
 
-### Coda Setup
+### Authentification
+Le pack utilise l'authentification par header personnalisé :
+- **Type** : CustomHeaderToken
+- **Header** : `X-N8N-API-KEY`
 
-1. **Install the Pack**: Add the pack to your Coda workspace
-2. **Configure Authentication**: Set up any required authentication tokens
-3. **Test Integration**: Use the test mode to verify connections
+### Domaines Réseau
+- **Domaine** : `mathieu-busse.dev`
 
-## 📁 Project Structure
+## Utilisation
 
-```
-coda-n8n/
-├── pack.ts              # Main pack configuration and formulas
-├── services/
-│   ├── index.ts         # Service exports
-│   ├── n8n.ts          # n8n API service
-│   └── fetch.ts        # HTTP request handling
-├── types/
-│   ├── index.ts        # Type exports
-│   ├── n8n.ts          # n8n-specific types
-│   └── request.ts      # Request/response types
-├── utils/
-│   ├── index.ts        # Utility exports
-│   └── url.ts          # URL handling utilities
-└── package.json        # Dependencies and scripts
-```
+1. **Déclencher un workflow** :
+   - Utilisez la formule `TriggerWorkflow`
+   - Spécifiez l'URL de base et l'ID du workflow
+   - Ajoutez des données si nécessaire
 
-## 🔌 API Reference
+2. **Gérer les utilisateurs** :
+   - Utilisez la table de synchronisation `Users`
+   - Configurez les paramètres de pagination et filtres
 
-### N8nService Class
+3. **Gérer les workflows** :
+   - Utilisez la table de synchronisation `Workflows`
+   - Consultez la liste des workflows disponibles
 
-The main service class for interacting with n8n.
+## Gestion des Erreurs
 
-#### Constructor
-```typescript
-constructor(baseUrl: string)
-```
+Le pack gère automatiquement :
+- Les différences entre workflows et requêtes API
+- La construction des URLs appropriées
+- L'ajout des headers et body nécessaires
+- Les modes test vs production pour les workflows
 
-#### Methods
+## Développement
 
-##### triggerWorkflow
-```typescript
-async triggerWorkflow(
-  id: string,
-  method: Method = 'GET',
-  data: any[],
-  testMode: boolean,
-  context: coda.ExecutionContext
-): Promise<any>
-```
-
-Triggers an n8n workflow with the specified parameters.
-
-### Types
-
-#### Workflow Interface
-```typescript
-interface Workflow {
-  id: string;
-  name: string;
-  active: boolean;
-  createdAt: string;
-  updatedAt: string;
-  nodes: any[];
-  connections: any;
-  settings?: any;
-}
-```
-
-#### Execution Interface
-```typescript
-interface Execution {
-  id: string;
-  workflowId: string;
-  status: string;
-  startedAt: string;
-  stoppedAt?: string;
-  data: any;
-}
-```
-
-## 🚨 Error Handling
-
-The pack includes comprehensive error handling:
-
-- **Validation Errors**: Ensures required parameters are provided
-- **Network Errors**: Handles connection issues with n8n instances
-- **Authentication Errors**: Manages authentication failures
-- **User-Friendly Messages**: Provides clear error messages to users
-
-## 🔒 Security
-
-- **HTTPS Only**: All connections to n8n instances must use HTTPS
-- **Token Authentication**: Supports Bearer token authentication
-- **Input Validation**: Validates all user inputs before processing
-- **Error Sanitization**: Prevents sensitive information leakage in error messages
-
-## 🧪 Testing
-
-```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run linting
-npm run lint
-```
-
-## 📝 Development
-
-### Adding New Features
-
-1. **Create Types**: Add new interfaces in `types/` directory
-2. **Implement Services**: Add business logic in `services/` directory
-3. **Add Formulas**: Create new formulas in `pack.ts`
-4. **Update Tests**: Add corresponding test cases
-5. **Update Documentation**: Keep this README up to date
-
-### Code Style
-
-- Use TypeScript for all new code
-- Follow ESLint configuration
-- Use Prettier for code formatting
-- Add JSDoc comments for public APIs
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
-
-## 📄 License
-
-ISC License - see LICENSE file for details
-
-## 👨‍💻 Author
-
-B. Mathieu
-
-## 🔗 Links
-
-- [Coda Packs Documentation](https://coda.io/packs/build/latest/)
-- [n8n Documentation](https://docs.n8n.io/)
-- [Coda Authentication Guide](https://coda.io/packs/build/latest/guides/basics/authentication/#simple-tokens)
-
-## 🆘 Support
-
-For issues and questions:
-1. Check the [Coda Packs documentation](https://coda.io/packs/build/latest/)
-2. Review n8n webhook configuration
-3. Verify network connectivity to your n8n instance
-4. Check authentication tokens and permissions
+Pour ajouter de nouveaux types de requêtes :
+1. Ajoutez la configuration dans `const.ts`
+2. Créez les types correspondants dans `types/`
+3. Ajoutez les méthodes dans `N8nService`
+4. Mettez à jour les utilitaires si nécessaire
