@@ -1,6 +1,6 @@
 import * as coda from "@codahq/packs-sdk";
 import { N8nService, UrlService } from "./services";
-import { rolesSchema, tagsSchema, userSchema } from "./codaTypes";
+import { tagsSchema, userSchema } from "./codaTypes";
 import { workflowSchema } from "./codaTypes/workflow";
 import { Method } from "./types";
 
