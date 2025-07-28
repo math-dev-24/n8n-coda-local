@@ -10,13 +10,15 @@ export class UrlService {
      * @param workflowId - ID du workflow
      * @param options - Options de la requête
      * @param params - Paramètres de la requête
+     * @param version - Version de l'API
      */
     constructor(
         private baseUrl: string,
         private route: ListNameUrlAvailable,
         private workflowId?: string,
         public options?: FetchOptions,
-        public params?: QueryParams
+        public params?: QueryParams,
+        private version: string = "v1"
     ) {
         if (!this.baseUrl || this.baseUrl.trim() === '') {
             throw new Error("Base URL is required and cannot be empty");
@@ -47,7 +49,7 @@ export class UrlService {
      */
     public getUrl(): string {
         const config = this.getUrlConfig();
-        return `${this.baseUrl}/api/v1${config.url}`;
+        return `${this.baseUrl}/api/${this.version}${config.url}`;
     }
     
     public buildUrl(url: string, params: QueryParams = {}): string {
