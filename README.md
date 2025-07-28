@@ -5,8 +5,6 @@
 [![Coda](https://img.shields.io/badge/Coda-FF6B6B?style=flat&logo=coda&logoColor=white)](https://coda.io/)
 [![n8n](https://img.shields.io/badge/n8n-FF6B6B?style=flat&logo=n8n&logoColor=white)](https://n8n.io/)
 
-Ce pack Coda permet d'interagir avec votre instance n8n personnelle pour déclencher des workflows et gérer les ressources via l'API n8n.
-
 This Coda package lets you interact with your personal n8n instance to trigger workflows and manage resources via the n8n API.
 
 ## 📋 Table des matières
@@ -19,31 +17,31 @@ This Coda package lets you interact with your personal n8n instance to trigger w
 - [Contribuer](#-contribuer)
 - [Licence](#-licence)
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-- 🔄 **Déclenchement de workflows** - Lancez vos workflows n8n directement depuis Coda
-- 📊 **Gestion des ressources** - Gérez vos workflows, utilisateurs et tags
-- 🔐 **Authentification sécurisée** - Utilisation de clés API n8n
-- 🌐 **Support multi-langue** - Documentation en français et anglais
-- ⚡ **Performance optimisée** - Requêtes API optimisées
+- 🔄 **Workflow Triggering** - Launch your n8n workflows directly from Coda
+- 📊 **Resource Management** - Manage your workflows, users and tags
+- 🔐 **Secure Authentication** - Using n8n API keys
+- 🌐 **Multi-language Support** - Documentation in French and English
+- ⚡ **Optimized Performance** - Optimized API requests
 
-## 📋 Prérequis
+## 📋 Prerequisites
 
-- [Node.js](https://nodejs.org/) (version 16 ou supérieure)
-- [pnpm](https://pnpm.io/) ou [npm](https://www.npmjs.com/)
+- [Node.js](https://nodejs.org/) (version 16 or higher)
+- [pnpm](https://pnpm.io/) or [npm](https://www.npmjs.com/)
 - [Coda CLI](https://coda.io/developers/apis/v1)
-- Une instance n8n auto-hébergée avec une clé API
+- A self-hosted n8n instance with an API key
 
 ## 🚀 Installation
 
-### 1. Cloner le repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/math-dev-24/n8n-coda-local.git
 cd n8n-coda-local
 ```
 
-### 2. Installer les dépendances
+### 2. Install the dependancy
 
 ```bash
 # Avec pnpm (recommandé)
@@ -53,7 +51,7 @@ pnpm install
 npm install
 ```
 
-### 3. Authentification Coda
+### 3. Coda Authentication
 
 ```bash
 # Avec pnpm
@@ -63,7 +61,7 @@ pnpm exec coda auth pack.ts
 npx coda auth pack.ts
 ```
 
-### 4. Déployer le pack
+### 4. Deploy the pack
 
 ```bash
 # Avec pnpm
@@ -75,54 +73,42 @@ npx coda upload pack.ts
 
 ## ⚙️ Configuration
 
-### Authentification
+### Authentication
 
-Le pack utilise l'authentification par clé API n8n :
+The pack uses n8n API key authentication:
 
 - **Type** : `CustomHeaderToken`
 - **Header** : `X-N8N-API-KEY`
-- **Domaine** : Votre domaine n8n (ex: `monDomain.fr`)
+- **Domaine** : Your domain n8n (ex: `monDomain.fr`)
 
 
 ## 🤝 Contribuer
 
-Les contributions sont les bienvenues ! Voici comment contribuer :
+Contributions are welcome! Here's how to contribute:
 
-1. Fork le projet
-2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3. Committez vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
+1. Fork this project
+2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`) 
+5. Open a Pull Request
 
-### Développement local
-
-```bash
-# Installer les dépendances de développement
-pnpm install
-
-# Lancer les tests
-pnpm test
-
-# Vérifier le linting
-pnpm lint
-```
 
 ## 📝 Licence
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is under MIT license. See the [LICENSE](LICENSE) file for more details.
 
-## 🙏 Remerciements
+## 🙏 Acknowledgments
 
-- [Coda](https://coda.io/) pour leur plateforme
-- [n8n](https://n8n.io/) pour leur excellent outil d'automatisation
-- La communauté open source
+- [Coda](https://coda.io/) for their platform
+- [n8n](https://n8n.io/) for their excellent automation tool
+- The open source community
 
 ## 📞 Support
 
-Si vous rencontrez des problèmes ou avez des questions :
+If you encounter any problems or have questions:
 
-- 📧 Créez une [issue](https://github.com/math-dev-24/n8n-coda-local/issues)
+- 📧 Create an [issue](https://github.com/math-dev-24/n8n-coda-local/issues)
 
 ---
 
-**⭐ N'oubliez pas de donner une étoile au projet si vous l'aimez !**
+**⭐ Don't forget to star the project if you like it!**
