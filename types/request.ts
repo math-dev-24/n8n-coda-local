@@ -1,0 +1,9 @@
+export interface FetchOptions {
+    method?: Method;
+    headers?: Record<string, string>;
+    body?: any;
+}
+
+export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
+
+export type QueryParams = Record<string, string | null | boolean | undefined | number>;

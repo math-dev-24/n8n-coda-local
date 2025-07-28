@@ -1,0 +1,16 @@
+---
+description: Presentation of project
+globs:
+alwaysApply: false
+---
+
+# Objectif
+
+Is cada pack for connect to personal N8N.
+
+
+Documentation : https://coda.io/packs/build/latest/
+- Authentification : 
+    - Authentification avec Bearer token
+    - https://coda.io/packs/build/latest/guides/basics/authentication/#simple-tokens
+

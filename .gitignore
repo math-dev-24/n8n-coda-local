@@ -1,0 +1,6 @@
+.env
+.node_modules
+.vscode
+.coda-pack.json
+.coda.json
+node_modules
