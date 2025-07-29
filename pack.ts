@@ -1,5 +1,5 @@
 import * as coda from "@codahq/packs-sdk";
-import { N8nService, UrlService } from "./services";
+import { N8nService } from "./services";
 import { tagsSchema, userSchema } from "./codaTypes";
 import { workflowSchema } from "./codaTypes/workflow";
 import { listMethods, Method } from "./types";
@@ -58,8 +58,7 @@ pack.addFormula({
     },
   }),
   execute: async function ([baseUrl, workflowId, method = "GET", data, testMode = false], context) {
-    const urlService = new UrlService(baseUrl, "triggerWorkflow", workflowId, { method: method as Method });
-    const n8nService = new N8nService(urlService);
+    const n8nService = new N8nService(baseUrl);
 
     const payload: any[] = data ? data.map(item => JSON.parse(item)) : [];
 
@@ -92,8 +91,7 @@ pack.addFormula({
   ],
   resultType: coda.ValueType.Boolean,
   execute: async function ([baseUrl, projectId], context) {
-    const urlService = new UrlService(baseUrl, "deleteProject");
-    const n8nService = new N8nService(urlService);
+    const n8nService = new N8nService(baseUrl);
     const result = await n8nService.deleteProject(context, projectId);
     return result.success;
   }
@@ -137,8 +135,7 @@ pack.addSyncTable({
     execute: async function ([baseUrl, limit = 10, includeRole = false, projectId], context) {
       const cursor = context.sync.continuation?.cursor || "";
 
-      const urlService = new UrlService(baseUrl, "getUsers");
-      const n8nService = new N8nService(urlService);
+      const n8nService = new N8nService(baseUrl);
       const body = await n8nService.getUsers(context, limit, includeRole, projectId, cursor);
 
       const users = body.data;
@@ -173,8 +170,7 @@ pack.addSyncTable({
     execute: async function ([baseUrl], context) {
       const cursor = context.sync.continuation?.cursor || "";
 
-      const urlService = new UrlService(baseUrl, "getWorkflows");
-      const n8nService = new N8nService(urlService);
+      const n8nService = new N8nService(baseUrl);
       const body = await n8nService.getWorkflows(context, cursor);
 
       const workflows = body.data;
@@ -212,12 +208,9 @@ pack.addSyncTable({
       }),
     ],
     execute: async function ([baseUrl, limit = 100], context) {
-
       const cursor = context.sync.continuation?.cursor || "";
 
-      const urlService = new UrlService(baseUrl, "getTags");
-      const n8nService = new N8nService(urlService);
-
+      const n8nService = new N8nService(baseUrl);
       const body = await n8nService.getTags(context, limit, cursor);
 
       const tags = body.data;
