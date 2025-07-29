@@ -7,6 +7,7 @@ export interface FetchOptions {
 }
 
 export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
+export const listMethods: Method[] = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"] as const;
 
 export type QueryParams = Record<string, string | null | boolean | undefined | number>;
 

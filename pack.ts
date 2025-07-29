@@ -2,7 +2,7 @@ import * as coda from "@codahq/packs-sdk";
 import { N8nService, UrlService } from "./services";
 import { tagsSchema, userSchema } from "./codaTypes";
 import { workflowSchema } from "./codaTypes/workflow";
-import { Method } from "./types";
+import { listMethods, Method } from "./types";
 
 export const pack = coda.newPack();
 
@@ -34,7 +34,7 @@ pack.addFormula({
       name: "method",
       description: "The HTTP method to use. Default is GET. Note: GET/HEAD requests cannot include data.",
       optional: true,
-      autocomplete: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+      autocomplete: listMethods,
     }),
     coda.makeParameter({
       type: coda.ParameterType.StringArray,
@@ -72,6 +72,32 @@ pack.addFormula({
     };
   },
 });
+
+
+pack.addFormula({
+  name: "deleteProject",
+  description: "Delete a project",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "baseUrl",
+      description: "The base URL of the n8n instance",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "projectId",
+      description: "The ID of the project to delete",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([baseUrl, projectId], context) {
+    const urlService = new UrlService(baseUrl, "deleteProject");
+    const n8nService = new N8nService(urlService);
+    const result = await n8nService.deleteProject(context, projectId);
+    return result.success;
+  }
+})
 
 // -------------------------------------------------------------------------------------------------------------------
 // Liste des utilisateurs
