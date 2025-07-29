@@ -51,6 +51,13 @@ pnpm install
 npm install
 ```
 
+### 4. Update config URL
+in pack.ts, change network domain
+```ts
+-1 pack.addNetworkDomain("mathieu-busse.dev");
++1 pack.addNetworkDomain("monDomaine.fr");
+```
+
 ### 3. Coda Authentication
 
 ```bash
