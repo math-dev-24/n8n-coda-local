@@ -41,25 +41,12 @@ export class N8nService {
     projectId: string = "",
     cursor: string = ""
   ): Promise<any> {
-    const params: QueryParams = {};
-
-    if (limit) {
-      params.limit = limit;
-    }
-
-    if (includeRole) {
-      params.includeRole = includeRole;
-    }
-
-    if (projectId) {
-      params.projectId = projectId;
-    }
-
-    if (cursor) {
-      params.cursor = cursor;
-    }
-
-    return this.urlService.executeRequestWithParams(context, params);
+    return this.urlService.executeRequestWithParams(context, {
+      limit: limit.toString(),
+      includeRole: includeRole.toString(),
+      projectId: projectId,
+      cursor: cursor,
+    } as QueryParams);
   }
 
   /**
@@ -117,5 +104,14 @@ export class N8nService {
       limit: limit,
       cursor: cursor,
     });
+  }
+
+  /**
+   * Supprime un projet
+   * @param context - Contexte d'exécution Coda
+   * @param projectId - ID du projet
+   */
+  async deleteProject(context: coda.ExecutionContext, projectId: string): Promise<any> {
+    return this.urlService.executeRequestWithParams(context, { id: projectId });
   }
 }
