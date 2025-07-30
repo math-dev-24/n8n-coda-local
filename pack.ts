@@ -6,7 +6,9 @@ import { listMethods, Method } from "./types";
 
 export const pack = coda.newPack();
 
-pack.addNetworkDomain("mathieu-busse.dev");
+pack.addNetworkDomain("MyDomain.com");
+
+const BASE_URL: string = "https://MyBaseUrl";
 
 pack.setUserAuthentication({
   type: coda.AuthenticationType.CustomHeaderToken,
@@ -22,11 +24,6 @@ pack.addFormula({
   isAction: true,
   connectionRequirement: coda.ConnectionRequirement.Optional,
   parameters: [
-    coda.makeParameter({
-      type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "Your base n8n instance URL",
-    }),
     coda.makeParameter({
       type: coda.ParameterType.String,
       name: "workflowId",
@@ -60,12 +57,12 @@ pack.addFormula({
       executionId: { type: coda.ValueType.String },
     },
   }),
-  execute: async function ([baseUrl, workflowId, method = "GET", data, testMode = false], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([workflowId, method = "GET", data, testMode = false], context) {
+    const n8nService = new N8nService(BASE_URL);
 
     const payload: any[] = data ? data.map(item => JSON.parse(item)) : [];
 
-    const result = await n8nService.triggerWorkflow(workflowId, payload, testMode, context);
+    const result = await n8nService.triggerWorkflow(workflowId, payload, testMode, method as Method, context);
 
     return {
       success: true,
@@ -86,18 +83,13 @@ pack.addFormula({
   parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "The base URL of the n8n instance",
-    }),
-    coda.makeParameter({
-      type: coda.ParameterType.String,
       name: "workflowId",
       description: "The ID of the workflow to activate",
     }),
   ],
   resultType: coda.ValueType.Boolean,
-  execute: async function ([baseUrl, workflowId], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([workflowId], context) {
+    const n8nService = new N8nService(BASE_URL);
     const result = await n8nService.activateWorkflow(workflowId, context);
     return result.success;
   }
@@ -110,19 +102,80 @@ pack.addFormula({
   parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "The base URL of the n8n instance",
-    }),
-    coda.makeParameter({
-      type: coda.ParameterType.String,
       name: "workflowId",
       description: "The ID of the workflow to deactivate",
     }),
   ],
   resultType: coda.ValueType.Boolean,
-  execute: async function ([baseUrl, workflowId], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([workflowId], context) {
+    const n8nService = new N8nService(BASE_URL);
     const result = await n8nService.deactivateWorkflow(workflowId, context);
+    return result.success;
+  }
+})
+
+// -------------------------------------------------------------------------------------------------------------------
+// Gestion Tags
+// -------------------------------------------------------------------------------------------------------------------
+
+pack.addFormula({
+  name: "createTag",
+  description: "Create a tag",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "name",
+      description: "The name of the tag to create",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([name], context) {
+    const n8nService = new N8nService(BASE_URL);
+    const result = await n8nService.createTag(name, context);
+    return result.success;
+  }
+})
+
+pack.addFormula({
+  name: "deleteTag",
+  description: "Delete a tag",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "tagId",
+      description: "The ID of the tag to delete",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([tagId], context) {
+    const n8nService = new N8nService(BASE_URL);
+    const result = await n8nService.deleteTag(tagId, context);
+    return result.success;
+  }
+})
+
+pack.addFormula({
+  name: "updateTag",
+  description: "Update a tag",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "tagId",
+      description: "The ID of the tag to update",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "name",
+      description: "The name of the tag to update",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([tagId, name], context) {
+    const n8nService = new N8nService(BASE_URL);
+    const result = await n8nService.updateTag(tagId, name, context);
     return result.success;
   }
 })
@@ -132,15 +185,29 @@ pack.addFormula({
 // -------------------------------------------------------------------------------------------------------------------
 
 pack.addFormula({
-  name: "deleteProject",
-  description: "Delete a project",
+  name: "createProject",
+  description: "Create a project",
   isAction: true,
   parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "The base URL of the n8n instance",
+      name: "name",
+      description: "The name of the project to create",
     }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([name], context) {
+    const n8nService = new N8nService(BASE_URL);
+    const result = await n8nService.createProject(name, context);
+    return result.success;
+  }
+})
+
+pack.addFormula({
+  name: "deleteProject",
+  description: "Delete a project",
+  isAction: true,
+  parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
       name: "projectId",
@@ -148,8 +215,8 @@ pack.addFormula({
     }),
   ],
   resultType: coda.ValueType.Boolean,
-  execute: async function ([baseUrl, projectId], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([projectId], context) {
+    const n8nService = new N8nService(BASE_URL);
     const result = await n8nService.deleteProject(projectId, context);
     return result.success;
   }
@@ -166,18 +233,13 @@ pack.addFormula({
   parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "The base URL of the n8n instance",
-    }),
-    coda.makeParameter({
-      type: coda.ParameterType.String,
       name: "userId",
       description: "The ID of the user to delete",
     }),
   ],
   resultType: coda.ValueType.Boolean,
-  execute: async function ([baseUrl, userId], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([userId], context) {
+    const n8nService = new N8nService(BASE_URL);
     const result = await n8nService.deleteUser(userId, context);
     return result.success;
   }
@@ -190,11 +252,6 @@ pack.addFormula({
   parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "The base URL of the n8n instance",
-    }),
-    coda.makeParameter({
-      type: coda.ParameterType.String,
       name: "email",
       description: "The email of the user to create",
     }),
@@ -205,8 +262,8 @@ pack.addFormula({
     }),
   ],
   resultType: coda.ValueType.Boolean,
-  execute: async function ([baseUrl, email, role], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([email, role], context) {
+    const n8nService = new N8nService(BASE_URL);
     const result = await n8nService.createUser(email, role, context);
     return result.success;
   }
@@ -219,11 +276,6 @@ pack.addFormula({
   parameters: [
     coda.makeParameter({
       type: coda.ParameterType.String,
-      name: "baseUrl",
-      description: "The base URL of the n8n instance",
-    }),
-    coda.makeParameter({
-      type: coda.ParameterType.String,
       name: "userId",
       description: "The ID of the user to update",
     }),
@@ -234,8 +286,8 @@ pack.addFormula({
     }),
   ],
   resultType: coda.ValueType.Boolean,
-  execute: async function ([baseUrl, userId, role], context) {
-    const n8nService = new N8nService(baseUrl);
+  execute: async function ([userId, role], context) {
+    const n8nService = new N8nService(BASE_URL);
     const result = await n8nService.updateUserRole(userId, role, context);
     return result.success;
   }
@@ -252,11 +304,6 @@ pack.addSyncTable({
     name: "Users",
     description: "A list of users",
     parameters: [
-      coda.makeParameter({
-        type: coda.ParameterType.String,
-        name: "baseUrl",
-        description: "The base URL of the n8n instance",
-      }),
       coda.makeParameter({
         type: coda.ParameterType.Number,
         name: "limit",
@@ -276,10 +323,10 @@ pack.addSyncTable({
         optional: true,
       })
     ],
-    execute: async function ([baseUrl, limit = 10, includeRole = false, projectId], context) {
+    execute: async function ([limit = 10, includeRole = false, projectId], context) {
       const cursor = context.sync.continuation?.cursor || "";
 
-      const n8nService = new N8nService(baseUrl);
+      const n8nService = new N8nService(BASE_URL);
       const body = await n8nService.getUsers(context, limit, includeRole, projectId, cursor);
 
       const users = body.data;
@@ -304,17 +351,11 @@ pack.addSyncTable({
   formula: {
     name: "Workflows",
     description: "A list of workflows",
-    parameters: [
-      coda.makeParameter({
-        type: coda.ParameterType.String,
-        name: "baseUrl",
-        description: "The base URL of the n8n instance",  
-      })
-    ],
-    execute: async function ([baseUrl], context) {
+    parameters: [],
+    execute: async function ([], context) {
       const cursor = context.sync.continuation?.cursor || "";
 
-      const n8nService = new N8nService(baseUrl);
+      const n8nService = new N8nService(BASE_URL);
       const body = await n8nService.getWorkflows(context, cursor);
 
       const workflows = body.data;
@@ -340,21 +381,16 @@ pack.addSyncTable({
     description: "A list of tags",
     parameters: [
       coda.makeParameter({
-        type: coda.ParameterType.String,
-        name: "baseUrl",
-        description: "The base URL of the n8n instance",
-      }),
-      coda.makeParameter({
         type: coda.ParameterType.Number,
         name: "limit",
         description: "The number of tags to return, default is 100",
         optional: true,
       }),
     ],
-    execute: async function ([baseUrl, limit = 100], context) {
+    execute: async function ([limit = 100], context) {
       const cursor = context.sync.continuation?.cursor || "";
 
-      const n8nService = new N8nService(baseUrl);
+      const n8nService = new N8nService(BASE_URL);
       const body = await n8nService.getTags(context, limit, cursor);
 
       const tags = body.data;

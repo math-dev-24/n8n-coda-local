@@ -3,4 +3,7 @@ export * from "./http-client";
 export * from "./url-builder";
 export * from "./workflow-service";
 export * from "./user-service";
+export * from "./tag-service";
+export * from "./role-service";
+export * from "./project-service";
 export * from "./fetch";

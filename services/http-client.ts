@@ -42,10 +42,10 @@ export class HttpClient {
      * @param data - Données à envoyer
      * @returns Options de requête
      */
-    prepareRequestOptions(route: string, data?: any): FetchOptions {
+    prepareRequestOptions(route: string, data?: any, method?: Method): FetchOptions {
         const config = this.urlBuilder.getUrlConfig(route);
         const options: FetchOptions = {
-            method: config.method as Method
+            method: method || config.method as Method
         };
 
         if (data && config.method !== "GET" && config.method !== "HEAD") {

@@ -1,5 +1,5 @@
 import * as coda from "@codahq/packs-sdk";
-import { Mode } from "../types";
+import { Method, Mode } from "../types";
 import { UrlBuilder } from "./url-builder";
 import { HttpClient } from "./http-client";
 
@@ -24,10 +24,11 @@ export class WorkflowService {
         workflowId: string,
         data: any[],
         mode: Mode,
+        method: Method,
         context: coda.ExecutionContext
     ): Promise<any> {
         const url = this._urlBuilder.buildWebhookUrl(workflowId, mode);
-        const options = this._httpClient.prepareRequestOptions("triggerWorkflow", data.length > 0 ? { items: data } : undefined);
+        const options = this._httpClient.prepareRequestOptions("triggerWorkflow", data.length > 0 ? { items: data } : undefined, method);
         
         return this._httpClient.executeRequest(url, options, context);
     }
