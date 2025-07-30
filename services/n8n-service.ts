@@ -97,7 +97,7 @@ export class N8nService {
         return this._httpClient.executeRequestWithParams(url, params, options, context);
     }
 
-    async deleteProject(context: coda.ExecutionContext, projectId: string): Promise<any> {
+    async deleteProject(projectId: string, context: coda.ExecutionContext): Promise<any> {
         const urlBuilder = new UrlBuilder(this._workflowService.urlBuilder.baseUrl);
         const baseUrl = urlBuilder.buildBaseUrl("deleteProject");
         const url = urlBuilder.replaceUrlParams(baseUrl, { id: projectId });

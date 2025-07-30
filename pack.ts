@@ -13,6 +13,9 @@ pack.setUserAuthentication({
   headerName: "X-N8N-API-KEY"
 })
 
+// -------------------------------------------------------------------------------------------------------------------
+// Trigger Workflow
+// -------------------------------------------------------------------------------------------------------------------
 pack.addFormula({
   name: "TriggerWorkflow",
   description: "Trigger an n8n workflow",
@@ -72,6 +75,61 @@ pack.addFormula({
   },
 });
 
+// -------------------------------------------------------------------------------------------------------------------
+// Gestion Workflow
+// -------------------------------------------------------------------------------------------------------------------
+
+pack.addFormula({
+  name: "activateWorkflow",
+  description: "Activate a workflow",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "baseUrl",
+      description: "The base URL of the n8n instance",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "workflowId",
+      description: "The ID of the workflow to activate",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([baseUrl, workflowId], context) {
+    const n8nService = new N8nService(baseUrl);
+    const result = await n8nService.activateWorkflow(workflowId, context);
+    return result.success;
+  }
+})
+
+pack.addFormula({
+  name: "deactivateWorkflow",
+  description: "Deactivate a workflow",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "baseUrl",
+      description: "The base URL of the n8n instance",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "workflowId",
+      description: "The ID of the workflow to deactivate",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([baseUrl, workflowId], context) {
+    const n8nService = new N8nService(baseUrl);
+    const result = await n8nService.deactivateWorkflow(workflowId, context);
+    return result.success;
+  }
+})
+
+// -------------------------------------------------------------------------------------------------------------------
+// Gestion Projects
+// -------------------------------------------------------------------------------------------------------------------
 
 pack.addFormula({
   name: "deleteProject",
@@ -92,7 +150,7 @@ pack.addFormula({
   resultType: coda.ValueType.Boolean,
   execute: async function ([baseUrl, projectId], context) {
     const n8nService = new N8nService(baseUrl);
-    const result = await n8nService.deleteProject(context, projectId);
+    const result = await n8nService.deleteProject(projectId, context);
     return result.success;
   }
 })
