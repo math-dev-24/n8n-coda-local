@@ -54,8 +54,11 @@ npm install
 ### 4. Update config URL
 in pack.ts, change network domain
 ```ts
--1 pack.addNetworkDomain("mathieu-busse.dev");
-+1 pack.addNetworkDomain("monDomaine.fr");
+9 -1   pack.addNetworkDomain("ExempleDomain.com");
+9 +1   pack.addNetworkDomain("MyDomainN8N.com");
+
+11 -1  const BASE_URL: string = "https://ExempleDomain.com";
+11 +1  const BASE_URL: string = "https://MyDomainN8N.com";
 ```
 
 ### 3. Coda Authentication
