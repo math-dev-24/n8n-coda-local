@@ -83,9 +83,9 @@ export class UserService {
         newRoleName: string,
         context: coda.ExecutionContext
     ): Promise<any> {
-        const baseUrl = this._urlBuilder.buildBaseUrl("updateUser");
+        const baseUrl = this._urlBuilder.buildBaseUrl("updateUserRole");
         const url = this._urlBuilder.replaceUrlParams(baseUrl, { id: userId });
-        const options = this._httpClient.prepareRequestOptions("updateUser", { newRoleName });
+        const options = this._httpClient.prepareRequestOptions("updateUserRole", { newRoleName });
         
         return this._httpClient.executeRequest(url, options, context);
     }

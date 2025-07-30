@@ -25,16 +25,6 @@ export const LIST_URL: Record<string, URL_CONFIG> = {
             },
         ],
     },
-    getUser: {
-        method: "GET",
-        url: "/users/:id",
-        params: [
-            {
-                id: "id",
-                type: "string",
-            },
-        ],
-    },
     deleteUser: {
         method: "DELETE",
         url: "/users/:id",
@@ -45,7 +35,7 @@ export const LIST_URL: Record<string, URL_CONFIG> = {
             },
         ],
     },
-    updateUser: {
+    updateUserRole: {
         method: "PUT",
         url: "/users/:id/role",
         params: [
