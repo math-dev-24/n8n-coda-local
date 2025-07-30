@@ -98,6 +98,92 @@ pack.addFormula({
 })
 
 // -------------------------------------------------------------------------------------------------------------------
+// Gestion Users
+// -------------------------------------------------------------------------------------------------------------------
+
+pack.addFormula({
+  name: "deleteUser",
+  description: "Delete a user",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "baseUrl",
+      description: "The base URL of the n8n instance",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "userId",
+      description: "The ID of the user to delete",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([baseUrl, userId], context) {
+    const n8nService = new N8nService(baseUrl);
+    const result = await n8nService.deleteUser(userId, context);
+    return result.success;
+  }
+})
+
+pack.addFormula({
+  name: "createUser",
+  description: "Create a user",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "baseUrl",
+      description: "The base URL of the n8n instance",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "email",
+      description: "The email of the user to create",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "role",
+      description: "The role of the user to create",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([baseUrl, email, role], context) {
+    const n8nService = new N8nService(baseUrl);
+    const result = await n8nService.createUser(email, role, context);
+    return result.success;
+  }
+})
+
+pack.addFormula({
+  name: "updateUserRole",
+  description: "Update the role of a user",
+  isAction: true,
+  parameters: [
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "baseUrl",
+      description: "The base URL of the n8n instance",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "userId",
+      description: "The ID of the user to update",
+    }),
+    coda.makeParameter({
+      type: coda.ParameterType.String,
+      name: "role",
+      description: "The role of the user to update",
+    }),
+  ],
+  resultType: coda.ValueType.Boolean,
+  execute: async function ([baseUrl, userId, role], context) {
+    const n8nService = new N8nService(baseUrl);
+    const result = await n8nService.updateUserRole(userId, role, context);
+    return result.success;
+  }
+})
+
+// -------------------------------------------------------------------------------------------------------------------
 // Liste des utilisateurs
 pack.addSyncTable({
   name: "Users",
