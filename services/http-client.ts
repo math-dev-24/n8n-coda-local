@@ -1,12 +1,16 @@
 import * as coda from "@codahq/packs-sdk";
 import { FetchOptions, Method, QueryParams } from "../types";
 import { fetcher } from "./fetch";
+import { UrlBuilder } from "./url-builder";
 
 export class HttpClient {
-    constructor(private urlBuilder: any) {}
+    constructor(private urlBuilder: UrlBuilder) {}
 
     /**
-     * Exécute une requête HTTP standard
+     * @param url - URL de la requête
+     * @param options - Options de la requête
+     * @param context - Contexte d'exécution Coda
+     * @returns Réponse de l'API
      */
     async executeRequest(
         url: string,
@@ -17,7 +21,11 @@ export class HttpClient {
     }
 
     /**
-     * Exécute une requête avec paramètres
+     * @param baseUrl - URL de base
+     * @param params - Paramètres de la requête
+     * @param options - Options de la requête
+     * @param context - Contexte d'exécution Coda
+     * @returns Réponse de l'API
      */
     async executeRequestWithParams(
         baseUrl: string,
@@ -30,7 +38,9 @@ export class HttpClient {
     }
 
     /**
-     * Prépare les options de requête pour une route donnée
+     * @param route - Route de l'API
+     * @param data - Données à envoyer
+     * @returns Options de requête
      */
     prepareRequestOptions(route: string, data?: any): FetchOptions {
         const config = this.urlBuilder.getUrlConfig(route);
